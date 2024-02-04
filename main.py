@@ -273,6 +273,99 @@ def get_success_prob_for_hybrid_toffoli_ccz(U):
     """
     return np.abs(get_alpha(index=[0,0,0,0,0,0,0,0,0,0,0,0], unitary=U))**2
 
+def get_bonus_hybrid_unitary():
+
+    best_loss = np.infty
+    best_prob = 0
+    best_U = None
+
+    timer = time.time()
+
+    try:
+        for _ in range(1000):
+
+            U = unitary_group.rvs(6)
+
+            loss = loss_function_bonus_hybrid(U=U)
+            prob = get_success_prob(U)
+
+            if loss < best_loss:
+                best_loss = loss
+                best_prob = prob
+                best_U = U
+
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+    except KeyboardInterrupt:
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+
+    return best_U
+
+def get_hybrid_toffoli_CCZ_unitary():
+
+    best_loss = np.infty
+    best_prob = 0
+    best_U = None
+
+    timer = time.time()
+
+    try:
+        for _ in range(1000):
+
+            U = unitary_group.rvs(6)
+
+            loss = loss_function_toffoli_hybrid(U=U)
+            prob = get_success_prob_for_hybrid_toffoli_ccz(U)
+
+            if loss < best_loss:
+                best_loss = loss
+                best_prob = prob
+                best_U = U
+
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+    except KeyboardInterrupt:
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+
+    return best_U
+
+def get_hybrid_CCZ_unitary():
+
+    best_loss = np.infty
+    best_prob = 0
+    best_U = None
+
+    timer = time.time()
+
+    try:
+        for _ in range(1000):
+
+            U = unitary_group.rvs(6)
+
+            loss = loss_function_ccz_hybrid(U=U)
+            prob = get_success_prob(U)
+
+            if loss < best_loss:
+                best_loss = loss
+                best_prob = prob
+                best_U = U
+
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+    except KeyboardInterrupt:
+        print("Calculated in", time.time()-timer, "seconds")
+        print(best_loss, best_prob)
+        print(U)
+
+    return best_U
+
 def get_CCZ_unitary():
 
     best_loss = np.infty
@@ -346,5 +439,50 @@ def get_CCZ():
 
     return p
 
+import concurrent.futures
+import multiprocessing
+
+import concurrent.futures
+import multiprocessing
+
+def get_CCZ_unitary_parallel(num_threads=4):
+    manager = multiprocessing.Manager()
+    best_loss = manager.Value('d', np.infty)
+    best_prob = manager.Value('d', 0)
+    best_U = manager.list()
+
+    timer = time.time()
+
+    def calculate_unitary(results):
+        nonlocal best_loss, best_prob, best_U
+        try:
+            U = unitary_group.rvs(6)
+            loss = loss_function_ccz_dual_rail(U=U)
+            prob = get_success_prob(U)
+
+            if loss < best_loss.value:
+                best_loss.value = loss
+                best_prob.value = prob
+                best_U[:] = U.tolist()
+
+        except KeyboardInterrupt:
+            pass
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = [executor.submit(calculate_unitary, best_loss) for _ in range(50000)]
+        concurrent.futures.wait(futures)
+
+    print("Calculated in", time.time()-timer, "seconds")
+    print("Best Loss:", best_loss.value)
+    print("Best Probability:", best_prob.value)
+    
+    print("\nBest Unitary Matrix:")
+    best_U_matrix = np.array(best_U)
+    print(best_U_matrix)
+
+    return best_U_matrix
+
+# Uso de la función con hilos
+get_CCZ_unitary_parallel(num_threads=4)
 
 # get_CCZ()
