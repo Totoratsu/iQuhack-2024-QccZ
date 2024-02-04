@@ -274,7 +274,9 @@ def get_success_prob_for_hybrid_toffoli_ccz(U):
     return np.abs(get_alpha(index=[0,0,0,0,0,0,0,0,0,0,0,0], unitary=U))**2
 
 def get_bonus_hybrid_unitary():
-
+    """
+    This functions makes use of the loss function of the bonus gate in hybrid encoding to approximate the unitary matrix of the underlying optical circuit. 
+    """
     best_loss = np.infty
     best_prob = 0
     best_U = None
@@ -305,6 +307,9 @@ def get_bonus_hybrid_unitary():
     return best_U
 
 def get_hybrid_toffoli_CCZ_unitary():
+    """
+    This functions makes use of the loss function of the toffoli and ccz gates in hybrid encoding to approximate the unitary matrix of the underlying optical circuit. 
+    """
 
     best_loss = np.infty
     best_prob = 0
@@ -336,6 +341,9 @@ def get_hybrid_toffoli_CCZ_unitary():
     return best_U
 
 def get_hybrid_CCZ_unitary():
+    """
+    This functions makes use of the loss function of the ccz gates in hybrid encoding to approximate the unitary matrix of the underlying optical circuit. 
+    """
 
     best_loss = np.infty
     best_prob = 0
@@ -367,6 +375,9 @@ def get_hybrid_CCZ_unitary():
     return best_U
 
 def get_CCZ_unitary():
+    """
+    This functions makes use of the loss function of the ccz gate in dual rail encoding to approximate the unitary matrix of the underlying optical circuit. 
+    """
 
     best_loss = np.infty
     best_prob = 0
@@ -419,6 +430,9 @@ def embed_submatrix(U):
 
 
 def get_CCZ():
+    """
+    This function returns the CCZ processor for the auto_grader. 
+    """
 
     unitary = get_CCZ_unitary()
     unitary = embed_submatrix(unitary)
@@ -438,4 +452,3 @@ def get_CCZ():
     # pcvl.pdisplay(p, recursive=True)
 
     return p
-# get_CCZ()
