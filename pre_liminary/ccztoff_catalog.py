@@ -6,11 +6,9 @@ from tqdm.auto import tqdm
 import numpy as np
 import matplotlib
 
-#import perceval.components.unitary_components as comp
-#from perceval.components import BS, PERM
 
 print(pcvl.catalog.list())
-if 1:
+if 0:
     czgate = pcvl.catalog['heralded cz'].build_processor() 
     pcvl.pdisplay(czgate, recursive=True) #saved image
 if 0:
@@ -25,7 +23,7 @@ states = {
 }
 
 ca = pcvl.algorithm.Analyzer(czgate, states)
-truth_table= {'00':'00', '01':'01', '10':'10', '11':'-11'}
+truth_table= {'00':'00', '01':'01', '10':'10', '11':'11'}  #could there be a way to include a '-' infront of '11'
 ca.compute(expected=truth_table)
 pcvl.pdisplay(ca)
 print(f"performance = {ca.performance}, fidelity = {ca.fidelity*100}%")
